@@ -16,7 +16,7 @@ class CreateClassesTable extends Migration
         Schema::create('classes', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('teacher_id'); //classroom teacher
+            $table->bigInteger('teacher_id')->unsigned(); //classroom teacher
             $table->timestamps();
         });
     }
