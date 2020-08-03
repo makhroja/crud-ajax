@@ -1,10 +1,11 @@
 @extends('layouts.app')
 @push('styles')
-<link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.5/css/responsive.bootstrap4.min.css">
 @endpush
 @section('content')
 <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+<button onclick="resetForm()" type="button" class="btn btn-primary" data-toggle="modal" data-target="#newStudent">
     Add Student
 </button>
 <hr>
@@ -24,7 +25,7 @@
 
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="newStudent" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -34,12 +35,40 @@
                 </button>
             </div>
             <div class="modal-body">
-                ...
+                <form enctype="multipart/form-data" id="formStudent" method="POST" action="">
+                    @csrf
+                    <div id="message"></div> <!-- Error Massage -->
+                    <div class="form-group">
+                        <label> Name </label>
+                        <input id="name" type="text" name="name" class="form-control" autocomplete="off">
+                        <small class="form-text text-danger">{{ $errors->first('name') }}</small>
+                    </div>
+                    <div class="form-group">
+                        <label> Age </label>
+                        <input id="age" type="text" name="age" class="form-control" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label> Class </label>
+                        <input id="class_id" type="text" name="class_id" class="form-control" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label> Gender </label>
+                        <select class="custom-select" id="gender" name="gender">
+                            <option value="">No Selected</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label> Address </label>
+                        <textarea resizable="true" id="address" type="text" name="address" class="textarea-autosize form-control" autocomplete="off" rows="3"></textarea>
+                    </div>
+
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary">Save</button>
+                <button value="Store" id="action" type="submit" class="btn btn-primary"><i class="feather icon-save mr-2"></i><a id="actionLabel">Save</a></button>
             </div>
+            </form>
         </div>
     </div>
 </div>
@@ -109,6 +138,47 @@
                 },
             ]
         });
+
+        $('#formStudent').on('submit', (function(event) {
+            event.preventDefault();
+            /* Store */
+            if ($('#action').val() == "Store") {
+
+                $.ajax({
+                    url: "{{ route('storeStudent') }}",
+                    type: "POST",
+                    data: new FormData(this),
+                    contentType: false,
+                    cache: false,
+                    processData: false,
+                    dataType: 'json',
+                    success: function(data) {
+                        console.log('Success:', data);
+                        table.draw();
+                        alert('Saved Successfully');
+                        $('#newStudent').modal('hide');
+                        resetForm();
+                    },
+                    error: function(data) {
+                        var errors = data.responseJSON;
+                        console.log(errors);
+                        errorsHtml = '<div class="text-danger"><ul>';
+                        $.each(errors.errors, function(k, v) {
+                            errorsHtml += '<li>' + v + '</li>';
+                        });
+                        errorsHtml += '</ul></di>';
+                        $('#message').html(errorsHtml);
+                    }
+                });
+
+            }
+
+        }));
+        /* End Document Ready */
     });
+
+    function resetForm() {
+        document.getElementById("formStudent").reset();
+    }
 </script>
 @endpush

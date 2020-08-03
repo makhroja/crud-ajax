@@ -20,3 +20,5 @@ Route::get('/', function () {
 Route::get('/students', 'StudentController@index');
 
 Route::get('/json-students', 'StudentController@dataTable')->name('jsonStudents');
+
+Route::post('/store-student', 'StudentController@store')->name('storeStudent');

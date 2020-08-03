@@ -8,7 +8,7 @@ class Student extends Model
 {
     protected $table = 'students'; //table di database, tetap didefinisikan walaupun sudah bentuk plural
     protected $fillable = [
-        'name', 'class', 'gender', 'age', 'address'
+        'name', 'class_id', 'gender', 'age', 'address'
     ]; //digunakan untuk mass insert dan update
     protected $guarded = 'id';
 
