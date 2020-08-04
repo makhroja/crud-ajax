@@ -16,6 +16,7 @@
             <th>Name</th>
             <th>Class</th>
             <th>Gender</th>
+            <th>Age</th>
             <th>Address</th>
             <th>Action</th>
         </tr>
@@ -26,8 +27,7 @@
 
 
 <!-- Modal -->
-<div class="modal fade" id="newStudent" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
+<div class="modal fade" id="newStudent" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -63,14 +63,12 @@
                     </div>
                     <div class="form-group">
                         <label> Address </label>
-                        <textarea resizable="true" id="address" type="text" name="address"
-                            class="textarea-autosize form-control" autocomplete="off" rows="3"></textarea>
+                        <textarea resizable="true" id="address" type="text" name="address" class="textarea-autosize form-control" autocomplete="off" rows="3"></textarea>
                     </div>
-
+                    <input type="hidden" name="id" id="id">
             </div>
             <div class="modal-footer">
-                <button value="Store" id="action" type="submit" class="btn btn-primary"><i
-                        class="feather icon-save mr-2"></i><a id="actionLabel">Save</a></button>
+                <button value="Store" id="action" type="submit" class="btn btn-primary"><i class="feather icon-save mr-2"></i><a id="actionLabel">Save</a></button>
             </div>
             </form>
         </div>
@@ -104,11 +102,22 @@
                 [5, 10, 25],
                 [5, 10, 25]
             ],
-            columnDefs: [
-                {"width": "5%","targets": 0 },
-                {"width": "10%","targets": 2 },
-                {"width": "10%","targets": 3 },
-                {"width": "10%","targets": 5 }
+            columnDefs: [{
+                    "width": "5%",
+                    "targets": 0
+                },
+                {
+                    "width": "10%",
+                    "targets": 2
+                },
+                {
+                    "width": "10%",
+                    "targets": 3
+                },
+                {
+                    "width": "10%",
+                    "targets": 5
+                }
             ],
             columns: [{
                     data: 'DT_RowIndex',
@@ -129,6 +138,10 @@
                 {
                     data: 'gender',
                     name: 'gender',
+
+                }, {
+                    data: 'age',
+                    name: 'age',
 
                 },
                 {
@@ -179,13 +192,81 @@
 
             }
 
+            /* Update */
+            if ($('#action').val() == "Update") {
+
+                $.ajax({
+                    url: "{{ route('updateStudent') }}",
+                    type: "POST",
+                    data: new FormData(this),
+                    contentType: false,
+                    cache: false,
+                    processData: false,
+                    dataType: 'json',
+                    success: function(data) {
+                        console.log('Success:', data);
+                        table.draw();
+                        alert('Update Successfully');
+                        $('#newStudent').modal('hide');
+                        resetForm();
+                    },
+                    error: function(data) {
+                        var errors = data.responseJSON;
+                        console.log(errors);
+                        errorsHtml = '<div class="text-danger"><ul>';
+                        $.each(errors.errors, function(k, v) {
+                            errorsHtml += '<li>' + v + '</li>';
+                        });
+                        errorsHtml += '</ul></di>';
+                        $('#message').html(errorsHtml);
+                    }
+                });
+
+            }
         }));
+
+        $(document).on('click', '#editBtn', function() {
+            var id = $(this).data('id');
+            $.ajax({
+                url: "{{route('getStudent')}}",
+                type: "POST",
+                data: {
+                    id: id,
+                },
+                dataType: 'json',
+                success: function(data) {
+                    console.log('Success:', data);
+                    resetForm();
+                    $('#newStudent').modal('show');
+                    $('#action').val('Update');
+                    $('#actionLabel').text('Update');
+                    $('#id').val(data.id);
+                    $('#name').val(data.name);
+                    $('#class_id').val(data.class_id);
+                    $('#gender').val(data.gender);
+                    $('#age').val(data.age);
+                    $('#address').val(data.address);
+                },
+                error: function(data) {
+                    var errors = data.responseJSON;
+                    console.log(errors);
+                    errorsHtml = '<div class="text-danger"><ul>';
+                    $.each(errors.errors, function(k, v) {
+                        errorsHtml += '<li>' + v + '</li>';
+                    });
+                    errorsHtml += '</ul></di>';
+                    $('#message').html(errorsHtml);
+                }
+            });
+        });
 
         /* End Document Ready */
     });
 
     function resetForm() {
         document.getElementById("formStudent").reset();
+        $('#action').val('Store');
+        $('#actionLabel').text('Save');
     }
 </script>
 @endpush

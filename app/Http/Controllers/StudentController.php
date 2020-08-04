@@ -37,6 +37,27 @@ class StudentController extends Controller
         return response()->json('Saved Successfully', 200);
     }
 
+    public function edit(Request $request, Student $student)
+    {
+        return response()->json($student->find($request->id), 200);
+    }
+
+    public function update(Request $request, Student $student)
+    {
+        Validator::make($request->all(), [
+            'name'          => 'required|min:5',
+            'class_id'      => 'required|numeric',
+            'age'           => 'required|numeric',
+            'gender'        => 'required',
+            'address'       => 'required',
+            'id'            => 'required'
+        ])->validate();
+
+        $student->find($request->id)->update($request->all());
+
+        return response()->json('Saved Successfully', 200);
+    }
+
     /**
      * Yajradatatables
      */
