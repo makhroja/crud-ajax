@@ -42,6 +42,12 @@ class StudentController extends Controller
         return response()->json($student->find($request->id), 200);
     }
 
+    public function delete(Request $request, Student $student)
+    {
+        $student->find($request->id)->delete();
+        return response()->json('Delete Successfully', 200);
+    }
+
     public function update(Request $request, Student $student)
     {
         Validator::make($request->all(), [
@@ -55,7 +61,7 @@ class StudentController extends Controller
 
         $student->find($request->id)->update($request->all());
 
-        return response()->json('Saved Successfully', 200);
+        return response()->json('Update Successfully', 200);
     }
 
     /**

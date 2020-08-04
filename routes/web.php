@@ -21,6 +21,7 @@ Route::get('/students', 'StudentController@index');
 
 Route::get('/json-students', 'StudentController@dataTable')->name('jsonStudents');
 Route::post('/get-student', 'StudentController@edit')->name('getStudent');
+Route::post('/delete-student', 'StudentController@delete')->name('deleteStudent');
 
 Route::post('/store-student', 'StudentController@store')->name('storeStudent');
 Route::post('/update-student', 'StudentController@update')->name('updateStudent');

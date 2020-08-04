@@ -91,6 +91,7 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+        /* Datatables Yajra */
         var table = $('#dataTable').DataTable({
             responsive: true,
             processing: true,
@@ -225,6 +226,7 @@
             }
         }));
 
+        /* Edit Function */
         $(document).on('click', '#editBtn', function() {
             var id = $(this).data('id');
             $.ajax({
@@ -260,6 +262,43 @@
             });
         });
 
+        /* Delete Function */
+        $(document).on('click', '#deleteBtn', function() {
+            var result = confirm("Are you sure want to delete?");
+            var id = $(this).data('id');
+            if (result) {
+
+                $.ajax({
+                    url: "{{ route('deleteStudent') }}",
+                    type: "POST",
+                    data: {
+                        id: id,
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        console.log('Success:', data);
+                        table.draw();
+                        alert('Delete Successfully');
+                        errorsHtml = '<div class="text-success"><ul><li>Delete Successfully</li></ul></div>';
+                        $('#message').html(errorsHtml);
+                        resetForm()
+                    },
+                    error: function(data) {
+                        console.log(data);
+                        var errors = data.responseJSON;
+                        console.log(errors);
+                        errorsHtml = '<div class="text-danger"><ul>';
+                        $.each(errors.errors, function(k, v) {
+                            errorsHtml += '<li>' + v + '</li>';
+                        });
+                        errorsHtml += '</ul></di>';
+                        $('#message').html(errorsHtml);
+                        resetForm()
+                    }
+                });
+            }
+
+        });
         /* End Document Ready */
     });
 
