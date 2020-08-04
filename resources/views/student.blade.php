@@ -16,6 +16,7 @@
             <th>Name</th>
             <th>Class</th>
             <th>Gender</th>
+            <th>Address</th>
             <th>Action</th>
         </tr>
     </thead>
@@ -25,7 +26,8 @@
 
 
 <!-- Modal -->
-<div class="modal fade" id="newStudent" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="newStudent" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -61,12 +63,14 @@
                     </div>
                     <div class="form-group">
                         <label> Address </label>
-                        <textarea resizable="true" id="address" type="text" name="address" class="textarea-autosize form-control" autocomplete="off" rows="3"></textarea>
+                        <textarea resizable="true" id="address" type="text" name="address"
+                            class="textarea-autosize form-control" autocomplete="off" rows="3"></textarea>
                     </div>
 
             </div>
             <div class="modal-footer">
-                <button value="Store" id="action" type="submit" class="btn btn-primary"><i class="feather icon-save mr-2"></i><a id="actionLabel">Save</a></button>
+                <button value="Store" id="action" type="submit" class="btn btn-primary"><i
+                        class="feather icon-save mr-2"></i><a id="actionLabel">Save</a></button>
             </div>
             </form>
         </div>
@@ -100,14 +104,11 @@
                 [5, 10, 25],
                 [5, 10, 25]
             ],
-            columnDefs: [{
-                    "width": "5%",
-                    "targets": 0
-                },
-                {
-                    "width": "10%",
-                    "targets": 4
-                }
+            columnDefs: [
+                {"width": "5%","targets": 0 },
+                {"width": "10%","targets": 2 },
+                {"width": "10%","targets": 3 },
+                {"width": "10%","targets": 5 }
             ],
             columns: [{
                     data: 'DT_RowIndex',
@@ -128,6 +129,11 @@
                 {
                     data: 'gender',
                     name: 'gender',
+
+                },
+                {
+                    data: 'address',
+                    name: 'address',
 
                 },
                 {
@@ -174,6 +180,7 @@
             }
 
         }));
+
         /* End Document Ready */
     });
 
